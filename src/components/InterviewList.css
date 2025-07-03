@@ -1,0 +1,323 @@
+.interview-list {
+  width: 100%;
+}
+
+.search-results-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: white;
+}
+
+.search-results-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.search-results-header p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+}
+
+.interviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  width: 100%;
+}
+
+.interview-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.interview-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 16px 16px 0 0;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.card-header h3 {
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.difficulty-badge {
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.description {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.meta-item svg {
+  color: #9ca3af;
+}
+
+.topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.topic-tag {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.topic-tag.more {
+  background: rgba(156, 163, 175, 0.1);
+  color: #6b7280;
+  border-color: rgba(156, 163, 175, 0.2);
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.start-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.start-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.no-results {
+  text-align: center;
+  color: white;
+  padding: 3rem 1rem;
+}
+
+.no-results svg {
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 1rem;
+}
+
+.no-results h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.no-results p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .interviews-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .interview-card {
+    padding: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .card-header h3 {
+    margin-right: 0;
+    font-size: 1.1rem;
+    line-height: 1.3;
+  }
+
+  .card-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .topics {
+    margin-bottom: 1rem;
+  }
+
+  .start-button {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  .search-results-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .search-results-header h3 {
+    font-size: 1.25rem;
+  }
+
+  .search-results-header p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .interview-card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .card-header h3 {
+    font-size: 1rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .topic-tag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .start-button {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .difficulty-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .meta-item {
+    font-size: 0.8rem;
+  }
+
+  .no-results {
+    padding: 2rem 1rem;
+  }
+
+  .no-results h3 {
+    font-size: 1.25rem;
+  }
+
+  .no-results p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Melhorias específicas para mobile */
+@media (max-width: 768px) {
+  .interview-card {
+    /* Melhorar toque no mobile */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .interview-card:active {
+    transform: scale(0.98);
+  }
+
+  /* Melhorar scroll no mobile */
+  .interviews-grid {
+    padding-bottom: 2rem;
+  }
+
+  /* Adicionar espaçamento para evitar sobreposição com navegação */
+  .interview-list {
+    padding-bottom: 1rem;
+  }
+}
+
+/* Melhorar acessibilidade no mobile */
+@media (max-width: 768px) {
+  .interview-card {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-actions {
+    margin-top: auto;
+  }
+
+  /* Melhorar contraste no mobile */
+  .card-header h3 {
+    color: #111827;
+  }
+
+  .description {
+    color: #4b5563;
+  }
+}

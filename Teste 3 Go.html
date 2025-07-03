@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 24.8.3.2 (MacOSX)"/>
+	<meta name="created" content="2025-06-30T17:43:23.584169897"/>
+	<meta name="changed" content="2025-06-30T17:48:55.338961289"/>
+	<style type="text/css">
+		@page { size: 21cm 29.7cm; margin: 2cm }
+		p { line-height: 115%; margin-bottom: 0.25cm; background: transparent }
+		h3 { margin-top: 0.25cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h3.western { font-family: "Liberation Serif", serif; font-size: 14pt; font-weight: bold }
+		h3.cjk { font-family: "Songti SC"; font-size: 14pt; font-weight: bold }
+		h3.ctl { font-family: "Arial Unicode MS"; font-size: 14pt; font-weight: bold }
+		h4 { margin-top: 0.21cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h4.western { font-family: "Liberation Serif", serif; font-size: 12pt; font-weight: bold }
+		h4.cjk { font-family: "Songti SC"; font-size: 12pt; font-weight: bold }
+		h4.ctl { font-family: "Arial Unicode MS"; font-size: 12pt; font-weight: bold }
+	</style>
+</head>
+<body lang="pt-BR" link="#000080" vlink="#800000" dir="ltr">
+<div id="Frame1" dir="ltr" style="position: absolute; top: 0cm; left: 0cm; width: 0.04cm; border: none; padding: 0cm; background: #ffffff"><p style="margin-left: 0.85cm">
+	<br/>
+<br/>
+
+	</p>
+</div>
+<div id="Frame2" dir="ltr" style="position: absolute; top: 0cm; left: 0cm; width: 0.04cm; border: none; padding: 0cm; background: #ffffff"><p style="margin-left: 0.85cm">
+	<br/>
+<br/>
+
+	</p>
+</div>
+<div id="Frame5" dir="ltr" style="position: absolute; top: 0cm; left: 0cm; width: 0.04cm; border: none; padding: 0cm; background: #ffffff"><p style="margin-left: 0.85cm">
+	<br/>
+<br/>
+
+	</p>
+</div>
+<div id="Frame7" dir="ltr" style="position: absolute; top: 0cm; left: 0cm; width: 56.67cm; border: none; padding: 0cm; background: #ffffff"><p style="margin-left: 0.85cm">
+	<br/>
+<br/>
+
+	</p>
+</div>
+<p style="line-height: 150%; orphans: 1; margin-bottom: 0cm"><span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><b><span style="background: transparent">Olá!
+Seja bem-vindo. Eu sou seu entrevistador hoje. Obrigado por dedicar
+seu tempo para conversar conosco.Vamos começar. Para aquecer, pode
+me contar um pouco sobre sua experiência com Go? O que te atraiu na
+linguagem e em que tipo de projetos você a tem utilizado
+profissionalmente?</span></b></font></span></p>
+<div id="bubble-e114a6b6695d" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Bom,
+	trabalho com go a 4 anos, o que mais me facina é como é uma
+	linguagem performatica e de alta conversão. Trabalhei em um projeto
+	que tinha como o core o disparo de pesquisas de satisfacao para
+	clientes atraves de canais como email, sms e wpp. Nesse projeto
+	tinhamos como arquitetura um servico golang principal que era a
+	nossa api interna e externa e os demais microsservicos, cada um
+	vinculado a um modulo do sistma, todos desenvolvidos em golang. O
+	fluxo do sistema era o usuario importava a planilha com os dados dos
+	clientes e o sistema tinha que disparar a pesquisa de satisfacao
+	para cada um dos clientes de acordo com o canal que o usuário
+	escolheu. O objetivo de utilizar golang para esse projeto foi
+	justamente pela necessidade de ser algo performatico</span></font></font></font></span></p>
+</div>
+<div id="bubble-8ef97348bd31" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Excelente,
+	obrigado pela introdução. É um ótimo exemplo de projeto onde Go
+	realmente brilha.Vamos aprofundar um pouco nesse desafio da
+	performance. Você mencionou o disparo de pesquisas para uma grande
+	quantidade de clientes a partir de uma planilha.Imagine uma planilha
+	com 100.000 clientes. Se você processasse cada cliente e enviasse a
+	pesquisa de forma sequencial, isso levaria muito tempo e não seria
+	eficiente.Como vocês arquitetaram a solução para lidar com esse
+	volume de forma concorrente? Poderia descrever o padrão que
+	utilizaram? Por exemplo, como vocês usaram goroutines e canais
+	(channels) para distribuir e gerenciar o trabalho de enviar essas
+	100.000 pesquisas? E como garantiram que não sobrecarregariam os
+	serviços externos (como o provedor de e-mail ou SMS) com tantas
+	requisições simultâneas?</span></b></font></font></font></span></p>
+</div>
+<div id="bubble-7bd7cff705f3" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Bom,
+	primeiro iria ter as configruacoes de quantidade de linhas
+	processadas em batch e a quantidade de goroutines nas minhas
+	variaveis de ambiente para ser facil de alterar e por seguranca.
+	Usaria uma lib para a leitura do csv. <br/>
+Cada goroutine iria ler
+	um batch de linhas e sakvaria o retorno em canais de erro e
+	respostas. Os canais devem ser utilizados apenas para retornos das
+	goroutines. <br/>
+Gerenciaria as goroutines com um waitgroup para
+	aguardar quando necessario e os batches seria como workers que
+	seriam gerenciados por semaforos. <br/>
+Como saber a quantidade de
+	gotouines? Sabendo que a média de meória utuilizada em uma
+	goroutine é 2kb eu iria calcular de acordo com a minha maquina do
+	ambiente produtivo e uytilizaria uma margem de erro para nao
+	sobrecarregar a minha infra</span></font></font></font></span></p>
+</div>
+<div id="bubble-d274da1a6deb" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 140%; orphans: 1; margin-bottom: 0.5cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Ótima
+	abordagem, você mencionou vários componentes importantes
+	como&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">WaitGroups</font>,
+	canais para retorno e o uso de semáforos para controlar os
+	workers.Vamos detalhar um pouco mais.</span></b></font></font></font></span></p>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Distribuição
+		de Trabalho:</b>&nbsp;Você disse que as goroutines leriam um
+		batch. Vamos imaginar um cenário um pouco diferente para explorar
+		o padrão de&nbsp;<i>worker pool</i>. Você tem uma única
+		goroutine que lê a planilha e envia cada cliente (ou cada linha)
+		para um canal de &quot;trabalho&quot; (jobs). Do outro lado, você
+		tem um número fixo de goroutines &quot;workers&quot; que estão
+		lendo desse canal. Como você gerenciaria o ciclo de vida desse
+		canal? Como você sinalizaria para os workers que não há mais
+		trabalho a ser feito e que eles podem encerrar?</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Rate
+		Limiting:</b>&nbsp;Seu cálculo do número de goroutines foi
+		baseado na capacidade da sua infraestrutura, o que faz sentido.
+		Mas, como eu mencionei, há um fator externo: o provedor de
+		SMS/email tem um&nbsp;<i>rate limit</i>, por exemplo, de 1.000
+		requisições por minuto. A sua solução com semáforos limita o
+		número de goroutines ativas&nbsp;<i>simultaneamente</i>, mas não
+		necessariamente limita a&nbsp;<i>taxa</i>&nbsp;de requisições ao
+		longo do tempo. Como você implementaria um controle de&nbsp;<i>rate
+		limiting</i>&nbsp;para garantir que seu sistema não ultrapasse o
+		limite imposto pelo serviço externo?</span></font></font></font></span></p></li>
+	</ol>
+</div>
+<div id="bubble-db6ac313f0c1" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Adicionaria
+	uma condicao na minha goroutine para validar se ainda tem dados
+	nesse canal, caso nao, fecharia o pool dos worker.<br/>
+<br/>
+Configuraria
+	a quantidade de rate limite nas minahs variaveis de ambiente e faria
+	uma verificacao se meu servico esta ultrapassando o valor imposto
+	pelo provedor</span></font></font></font></span></p>
+</div>
+<div id="bubble-2c5609b87453" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 0; margin-top: 0.16cm; margin-bottom: 0.16cm">
+	<br/>
+<br/>
+
+	</p>
+</div>
+<div id="bubble-16d3a5c2b9af" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0.5cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Entendi.
+	Vamos detalhar um pouco mais esses dois pontos.</span></b></font></font></font></span></p>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Sobre
+		o fechamento do pool de workers:</b>&nbsp;Você disse que
+		adicionaria uma condição para validar se ainda há dados no
+		canal. No padrão de&nbsp;<i>Producer/Consumer</i>&nbsp;em Go,
+		geralmente não &quot;verificamos&quot; se um canal tem dados. Em
+		vez disso, o&nbsp;<i>producer</i>&nbsp;(quem envia os dados)
+		sinaliza o fim do trabalho.</span></font></font></font></span></p></li>
+	</ol>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Pergunta:</b>&nbsp;Quando
+		a goroutine &quot;produtora&quot; (a que lê o arquivo) termina de
+		enviar todos os clientes para o canal de trabalhos, qual é
+		a&nbsp;<b>operação específica</b>&nbsp;que ela deve executar no
+		canal para que os &quot;workers&quot; (que estão lendo desse
+		canal, provavelmente em um loop&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">for
+		range</font>) saibam que podem parar?</span></font></font></font></span></p></li>
+	</ul>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Sobre
+		o Rate Limiting:</b>&nbsp;Dizer que &quot;faria uma verificação&quot;
+		é um bom começo, mas como um desenvolvedor sênior, eu esperaria
+		um pouco mais de detalhe na implementação.</span></font></font></font></span></p></li>
+	</ol>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Pergunta:</b>&nbsp;Como
+		você implementaria essa verificação na prática? Imagine que o
+		limite é de 100 requisições por segundo. Você usaria alguma
+		ferramenta da biblioteca padrão, como um&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">time.Ticker</font>,
+		ou talvez uma biblioteca externa como a&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">golang.org/x/time/rate</font>?
+		Poderia descrever brevemente a lógica dentro do seu worker para
+		esperar, se necessário, antes de fazer a chamada para o serviço
+		externo?</span></font></font></font></span></p></li>
+	</ul>
+</div>
+<div id="bubble-0d9b81891846" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Devemos
+	adicionar um defer com um close no canal.<br/>
+<br/>
+utilizaria o
+	time.Ticker para verificar se esta ultrapassando o limite esperado e
+	aguardaria para a proxima requisicao</span></font></font></font></span></p>
+</div>
+<div id="bubble-3f9952606820" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 0; margin-top: 0.16cm; margin-bottom: 0.16cm">
+	<br/>
+<br/>
+
+	</p>
+</div>
+<div id="bubble-65e78be4fb56" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0.5cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Exato!</span></b></font></font></font></span></p>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Fechamento
+		do canal:</b>&nbsp;Você está certo, a operação
+		é&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">close(channel)</font>.
+		É crucial que a goroutine&nbsp;<i>produtora</i>&nbsp;(a que envia
+		os dados) seja a responsável por chamar o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">close</font>.
+		Se os&nbsp;<i>consumidores</i>&nbsp;tentassem fechar, poderiam
+		causar um pânico se outro consumidor ou o produtor ainda estivesse
+		ativo.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Rate
+		Limiting:</b>&nbsp;Usar um&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">time.Ticker</font>&nbsp;é
+		uma excelente abordagem. Você pode criar um ticker que &quot;dispara&quot;
+		a cada&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">X</font>&nbsp;milissegundos
+		(calculado com base no seu limite de taxa, ex: 1000ms / 100 reqs =
+		10ms/req). O worker então esperaria por um &quot;tick&quot; do
+		canal do ticker (<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">&lt;-ticker.C</font>)
+		antes de processar cada item. Isso efetivamente limita a taxa de
+		processamento.</span></font></font></font></span></p></li>
+	</ol>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">Muito
+	bem. Vamos para o próximo cenário.Imagine que o processo de envio
+	das 100.000 pesquisas está em andamento. De repente, o serviço
+	externo de e-mail/SMS fica fora do ar. Sua aplicação começa a
+	receber erros de conexão para cada tentativa de envio.Nesse
+	cenário, continuar tentando enviar as 90.000 pesquisas restantes é
+	inútil e apenas consumirá recursos. O ideal seria interromper todo
+	o processo de forma rápida e controlada.<b>Pergunta:</b>&nbsp;Como
+	você implementaria um padrão de &quot;circuit breaker&quot; ou uma
+	lógica de cancelamento geral nesse caso? Se um número&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">X</font>&nbsp;de
+	workers falhar consecutivamente, como você sinalizaria para todas
+	as outras goroutines (incluindo a que está lendo o arquivo e as
+	outras workers) que elas devem parar o que estão fazendo e encerrar
+	a operação imediatamente? Pense no pacote&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">context</font>&nbsp;para
+	isso.</span></font></font></font></span></p>
+</div>
+<div id="bubble-391ba2ee75ae" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Antes
+	de enviar a mensagem eu sempre bateria na rota de health check do
+	provedor para garantir que ele esta no ar, caso nao esteja, eu iria
+	cacelar o meu context utilziando um defer cancel e garantir que
+	essas mensagens sejam disparadas novamente quando o provedor voltar
+	a funcionar com um fallback</span></font></font></font></span></p>
+</div>
+<div id="bubble-4d65ed4b8d0b" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 0; margin-top: 0.16cm; margin-bottom: 0.16cm">
+	<br/>
+<br/>
+
+	</p>
+</div>
+<div id="bubble-4fc8ade6a9fb" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0.5cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Interessante
+	a sua abordagem. Vamos analisar isso.</span></b></font></font></font></span></p>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Health
+		Check vs. Falha Real:</b>&nbsp;Fazer uma chamada de health
+		check&nbsp;<i>antes de cada envio</i>&nbsp;pode ser ineficiente. Se
+		você tem 100.000 clientes, isso significa 100.000 chamadas de
+		health check, dobrando o tráfego de rede para o provedor. Além
+		disso, o serviço pode passar no health check e falhar na chamada
+		de envio um milissegundo depois. A falha real da chamada de envio é
+		o indicador mais confiável de que algo está errado.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Cancelamento
+		e Fallback:</b>&nbsp;Você mencionou&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">defer
+		cancel()</font>&nbsp;e um fallback. Isso é ótimo. Mas vamos
+		conectar isso ao padrão Circuit Breaker.</span></font></font></font></span></p></li>
+	</ol>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">O
+	padrão Circuit Breaker funciona como um disjuntor elétrico em sua
+	casa. Ele tem três estados:</span></font></font></font></span></p>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Fechado
+		(Closed):</b>&nbsp;O estado normal. As requisições passam.</span></font></font></font></span></p></li>
+	</ul>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Aberto
+		(Open):</b>&nbsp;Após um certo número de falhas, o disjuntor
+		&quot;abre&quot;. Todas as chamadas subsequentes
+		falham&nbsp;<i>imediatamente</i>&nbsp;(fast-fail) sem nem tentar a
+		chamada de rede. Isso protege tanto o nosso sistema quanto o
+		sistema externo.</span></font></font></font></span></p></li>
+	</ul>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Meio-Aberto
+		(Half-Open):</b>&nbsp;Após um tempo, o disjuntor permite que uma
+		única chamada de teste passe. Se for bem-sucedida, ele volta para
+		o estado &quot;Fechado&quot;. Se falhar, ele volta para &quot;Aberto&quot;.</span></font></font></font></span></p></li>
+	</ul>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Minha
+	pergunta é:</b>Focando na implementação do&nbsp;<b>Circuit
+	Breaker</b>&nbsp;(e não no health check prévio):a) Como você
+	gerenciaria o estado (o contador de falhas e o estado atual:
+	Aberto/Fechado) de forma segura entre múltiplas goroutines? Você
+	usaria um&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">mutex</font>&nbsp;para
+	proteger um struct compartilhado, ou talvez contadores atômicos do
+	pacote&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">sync/atomic</font>?b)
+	Como a lógica dentro do seu worker mudaria? Como ele decidiria se
+	deve tentar a chamada de rede ou falhar imediatamente com base no
+	estado do disjuntor?c) E sobre o fallback que você mencionou:
+	quando uma chamada falha porque o disjuntor está aberto, onde você
+	armazenaria essa tarefa (o cliente a ser contatado) para uma nova
+	tentativa futura? Seria em memória, em um banco de dados, ou talvez
+	em uma fila de mensagens (como uma Dead Letter Queue)?</span></font></font></font></span></p>
+</div>
+<div id="bubble-a3c778b96c9a" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Utilizatia
+	mutex para locar e desalocar a struct compartilhada<br/>
+<br/>
+Eu
+	teria configurado a quantidade de falhas considerado aceitaveis,
+	caso ultrapassasse esse valor iria cancelar o context<br/>
+<br/>
+Salvatia
+	em uma fila para o reprocessamento</span></font></font></font></span></p>
+</div>
+<div id="bubble-2a38d170687b" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0.5cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Ok,
+	vamos aprofundar um pouco mais nisso.</span></b></font></font></font></span></p>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Mutex
+		para a struct compartilhada:</b>&nbsp;Correto, usar
+		um&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">sync.Mutex</font>&nbsp;para
+		proteger o acesso a uma struct que contém o contador de falhas e o
+		estado do Circuit Breaker é uma abordagem padrão e segura.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Cancelamento
+		do Context:</b>&nbsp;Você disse que cancelaria o contexto se o
+		número de falhas fosse ultrapassado. Isso funciona para parar o
+		processo&nbsp;<i>atual</i>. Mas o padrão Circuit Breaker visa
+		principalmente evitar chamadas futuras a um serviço degradado. O
+		cancelamento do contexto interrompe o trabalho, mas não implementa
+		o comportamento de &quot;abrir&quot; o circuito para falhas
+		rápidas.</span></font></font></font></span></p></li>
+	</ol>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Pergunta:</b>&nbsp;Como
+		você combina as duas ideias? Onde, na lógica do worker, você
+		faria a verificação do estado do Circuit Breaker? Seria antes de
+		tentar a chamada de rede? E o que aconteceria se o circuito
+		estivesse &quot;aberto&quot;?</span></font></font></font></span></p></li>
+	</ul>
+	<ol>
+		<li value="3"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Fila
+		para reprocessamento:</b>&nbsp;Excelente. Usar uma fila (como
+		RabbitMQ, SQS, etc.) é a solução mais robusta
+		para&nbsp;<i>dead-lettering</i>&nbsp;e reprocessamento.</span></font></font></font></span></p></li>
+	</ol>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Pergunta:</b>&nbsp;O
+		que é mais importante para você garantir quando envia uma tarefa
+		para essa fila de reprocessamento? Idempotência? Ou seja, como
+		você garante que, se o reprocessamento acontecer mais de uma vez
+		para o mesmo cliente, ele não receberá a pesquisa múltiplas
+		vezes?</span></font></font></font></span></p></li>
+	</ul>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">Vamos
+	focar nessas duas perguntas.</span></font></font></font></span></p>
+</div>
+<div id="bubble-9208a49f56cc" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Seria
+	antes de fazer a chamada da rede e se o circuit estivesse aberto eu
+	o fecharia.<br/>
+<br/>
+Bom a fila tem que ter uma DLQ para quando
+	der erro cai nela, primeiro ponto importante. O segundo é que no
+	processamento eu teria que validar se essa mensgaem ja foi enviada
+	ou nao atraves do status armazenado no meu banco de dados</span></font></font></font></span></p>
+</div>
+<div id="bubble-34cdd349fe4d" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 100%; orphans: 0; margin-top: 0.16cm; margin-bottom: 0.16cm">
+	<br/>
+<br/>
+
+	</p>
+</div>
+<div id="bubble-8e370feb0a76" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Boa!
+	Vamos analisar esses dois pontos.Primeiro, sobre a idempotência:Sua
+	resposta é perfeita. A combinação de uma DLQ (Dead Letter Queue)
+	para&nbsp;capturar falhas persistentes e uma verificação de status
+	no banco de dados antes de executar a ação é exatamente a
+	abordagem correta para garantir a idempotência. Isso previne envios
+	duplicados e torna o sistema de reprocessamento seguro.
+	Excelente.Agora, sobre o Circuit Breaker:Vamos refinar um detalhe
+	importante. Você disse:&nbsp;<i>&quot;se o circuit estivesse aberto
+	eu o fecharia.&quot;</i>Na verdade, o comportamento padrão do
+	pattern é o&nbsp;oposto. Se o circuito está&nbsp;aberto, significa
+	que o serviço externo está instável. A sua função deve&nbsp;retornar
+	um erro&nbsp;<i>imediatamente</i>, sem sequer tentar a chamada de
+	rede. Esse é o princípio do &quot;fail fast&quot;, que protege
+	tanto o seu sistema quanto o sistema externo.O circuito só tenta se
+	&quot;fechar&quot; sozinho depois de um período&nbsp;de tempo
+	(o&nbsp;<i>timeout</i>). Ele entra no estado &quot;Meio-Aberto&quot;,
+	permite que uma única requisição de teste passe, e só se ela for
+	bem-sucedida é que o circuito se fecha completamente, voltando
+	ao&nbsp;normal. Se a chamada de teste falhar, ele volta a ficar
+	&quot;aberto&quot;.Faz sentido?</span></b></font></font></font></span></p>
+	<hr/>
+
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Você
+	demonstrou um bom entendimento de padrões de concorrência e
+	resiliência. Vamos mudar de tópico para outra área
+	crucial:&nbsp;Testes.A lógica do seu worker que estamos discutindo
+	é complexa. Ela envolve:</b></span></font></font></font></span></p>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Receber
+		jobs de um canal.</span></b></font></font></font></span></p></li>
+	</ul>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Respeitar
+		um rate limiter.</span></b></font></font></font></span></p></li>
+	</ul>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Verificar
+		o estado de um Circuit&nbsp;Breaker.</span></b></font></font></font></span></p></li>
+	</ul>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Chamar
+		um serviço externo.</span></b></font></font></font></span></p></li>
+	</ul>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Enviar
+		resultados para canais de sucesso/erro.</span></b></font></font></font></span></p></li>
+	</ul>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Pergunta:&nbsp;Como
+	você escreveria um&nbsp;teste de unidade&nbsp;para essa lógica do
+	worker? Especificamente, como você lidaria com as dependências,
+	como o cliente do provedor de SMS (que faz a chamada de rede) e
+	o&nbsp;estado compartilhado do Circuit Breaker, para testar a lógica
+	do worker de forma isolada? Você usaria interfaces para&nbsp;isso?
+	Poderia dar um exemplo de como uma interface ajudaria?</span></b></font></font></font></span></p>
+</div>
+<div id="bubble-540bea22bfd9" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">priemiro
+	eu prepararia todo o codigo para poder fazer testes eficazes, ou
+	seja, utilizaria injecao de dependencia para o vinculo de
+	controllers, services e repositories. Dessa forma conseguiria mockar
+	os arquivos de forma muito mais eficaz. utilizaria o mockery para
+	gerar mocks de todo o projeto e a lib teting do proprio go para o
+	código de teste. Utilizaria um suite em cada arquivo e os cenarios
+	de cada metodo ficariam acoplados a um describe. Para testes de
+	inteegracao eu utilizaria um banco de dados proprio para isso</span></font></font></font></span></p>
+</div>
+<div id="bubble-adf74d8ff928" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 140%; orphans: 1; margin-bottom: 0.5cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Ótimo.
+	Você mencionou todos os conceitos chave: injeção de dependência,
+	mocks, e uma estrutura de testes clara com&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">suite</font>&nbsp;e&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">describe</font>&nbsp;(comum
+	em frameworks como&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">testify</font>).Vamos
+	focar na parte da&nbsp;injeção de dependência&nbsp;e&nbsp;mocks,
+	que é o cerne do teste&nbsp;de unidade.Você tem uma função ou
+	método worker que precisa fazer uma chamada para o provedor de SMS.
+	A&nbsp;implementação concreta dessa chamada estaria em um&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">struct</font>,
+	vamos chamá-lo de&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">SmsProviderClient</font>.Pergunta:</span></b></font></font></font></span></p>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>A
+		Interface:</b>&nbsp;Como você definiria a interface para
+		o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">SmsProviderClient</font>?
+		O que ela abstrairia? Qual método essa interface teria?</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>O
+		Mock:</b>&nbsp;Usando&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">mockery</font>&nbsp;ou&nbsp;manualmente,
+		como seria a implementação do&nbsp;<i>mock</i>&nbsp;dessa
+		interface para um cenário de teste específico? Por exemplo, um
+		teste onde você quer&nbsp;simular que o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">SmsProviderClient</font>&nbsp;retorna
+		um erro de&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">rate
+		limit exceeded</font>.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="3"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>A
+		Injeção:</b>&nbsp;Como a sua função/struct worker receberia
+		essa dependência? Seria através do construtor&nbsp;(uma
+		função&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">NewWorker(...)</font>),
+		ou de outra forma?</span></font></font></font></span></p></li>
+	</ol>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">Essas
+	três perguntas visam entender como você, na prática, conectaria
+	as peças para criar um teste de unidade isolado e eficaz.</span></font></font></font></span></p>
+</div>
+<div id="bubble-7428f646accc" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Eu
+	teria um metodo para fazer a requisicao para o provedor e a
+	interface teria esse metodo, assim eu conseguiria mockar o seu
+	retorno de acordo com a entrada. <br/>
+Eu injetaria essa interface
+	atraves do construtor do meu service, dessa forma eu conseguiria
+	gerar o mock no mcokery e no codigo de testes conseguiria garantir a
+	entrada e resposta que eu preciso para cada um deles</span></font></font></font></span></p>
+</div>
+<div id="bubble-6e9699a52fe2" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0.5cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Perfeito.
+	Sua resposta foi direta e precisa, cobrindo exatamente os pontos
+	cruciais do design para testabilidade:</span></b></font></font></font></span></p>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Interface
+		focada na ação:</b>&nbsp;A interface abstrai a&nbsp;ação
+		(<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">SendSms</font>,
+		por exemplo), não a implementação.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Injeção
+		via construtor:</b>&nbsp;Essa é a forma mais limpa e explícita de
+		fornecer dependências. Fica claro, na criação do objeto, tudo o
+		que ele precisa para funcionar.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="3"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Mocking
+		para controle:</b>&nbsp;Ao passar uma implementação&nbsp;&quot;falsa&quot;
+		(o mock) da interface durante o teste, você ganha controle total
+		sobre o comportamento da dependência, permitindo&nbsp;simular
+		cenários de sucesso, erro, latência, etc., sem precisar de uma
+		conexão de rede real.</span></font></font></font></span></p></li>
+	</ol>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">Muito
+	bem.</span></font></font></font></span></p>
+	<hr/>
+
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Última
+	pergunta técnica antes de finalizarmos</b><b>.Vamos falar sobre
+	o&nbsp;</b><font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace"><b>context</b></font><b>&nbsp;em
+	Go. Ele é fundamental em aplicações de microserviços.Imagine a
+	seguinte cadeia de chamadas:</b><font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace"><b>Request
+	do Usuário -&gt; Serviço A -&gt; Serviço B -&gt; Serviço C</b></font><b>O
+	usuário, através do browser, cancela a requisição. O&nbsp;</b><font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace"><b>Serviço
+	A</b></font><b>, que é a nossa API Gateway, detecta isso (por
+	exemplo, o&nbsp;cliente fechou a conexão HTTP).Pergunta:Como você
+	garante que o cancelamento seja propagado do&nbsp;</b><font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace"><b>Serviço
+	A</b></font><b>&nbsp;para o&nbsp;</b><font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace"><b>B</b></font><b>&nbsp;e
+	depois para o&nbsp;</b><font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace"><b>C</b></font><b>,
+	para que eles parem o trabalho que&nbsp;estavam fazendo (por
+	exemplo, uma consulta pesada no banco de dados no&nbsp;</b><font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace"><b>Serviço
+	C</b></font><b>) e liberem recursos&nbsp;o mais rápido
+	possível?Descreva o papel do&nbsp;</b><font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace"><b>context.Context</b></font><b>&nbsp;nessa
+	propagação e onde, em cada serviço, você passaria e verificaria
+	o estado desse contexto.</b></span></font></font></font></span></p>
+</div>
+<div id="bubble-be9750dc3f80" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">o
+	context deve estar na comunicacao entre os servicos, dessa forma
+	quando ele for cancelado no servico A ele sera cancelado no servico
+	C. </span></font></font></font></span>
+	</p>
+</div>
+<div id="bubble-79aee22904a5" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 100%; orphans: 0; margin-top: 0.16cm; margin-bottom: 0.16cm">
+	<br/>
+<br/>
+
+	</p>
+</div>
+<div id="bubble-e10fbf1b30c9" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0.5cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Exato.
+	A ideia central é essa, e essa é a parte mais importante do
+	conceito. O&nbsp;contexto funciona como um &quot;mensageiro&quot;
+	que carrega sinais de cancelamento, timeouts e outros valores
+	através da sua&nbsp;cadeia de chamadas.Para complementar, um
+	desenvolvedor sênior detalharia o &quot;como&quot; isso acontece
+	na&nbsp;prática:</span></b></font></font></font></span></p>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Onde
+		começa:</b>&nbsp;No&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">Serviço
+		A</font>, o servidor HTTP já fornece um&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">context</font>&nbsp;dentro
+		do objeto&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">http.Request</font>.
+		Esse é o nosso ponto de partida.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Como
+		se propaga:</b>&nbsp;Quando&nbsp;o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">Serviço
+		A</font>&nbsp;chama o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">Serviço
+		B</font>&nbsp;(via HTTP ou gRPC), o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">context</font>&nbsp;é
+		passado. Em chamadas HTTP, isso geralmente é feito através de
+		bibliotecas que serializam o prazo final&nbsp;(<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">deadline</font>)
+		do contexto em cabeçalhos HTTP. No gRPC, isso é integrado
+		nativamente.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="3"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Como&nbsp;se
+		escuta:</b>&nbsp;O&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">Serviço
+		C</font>&nbsp;(e o B também) não é cancelado magicamente.
+		O&nbsp;código dele precisa ativamente &quot;escutar&quot; o sinal
+		de cancelamento. Isso é feito de duas formas principais:</span></font></font></font></span></p></li>
+	</ol>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">Usando
+		um&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">select</font>&nbsp;em
+		operações longas:</span></font></font></font></span></p></li>
+	</ul>
+	<div id="937782ae-6cf1-4df7-8e96-5f0c2cf6f31c" dir="ltr">
+		<ul><li style="display: block"><p style="line-height: 0.34cm; orphans: 1; margin-top: 0.11cm; margin-bottom: 0.11cm; border: none; padding: 0cm">
+			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font size="1" style="font-size: 8pt"><span style="background: #252526">g<span id="Frame6" dir="ltr" style="float: left; width: 56.67cm; border: none; padding: 0cm; background: #ffffff"><p style="letter-spacing: normal; line-height: 0.48cm; margin-left: 0.85cm; margin-bottom: 0cm">
+				<font color="#d4d4d4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#569cd6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">select</span></font></font></font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">&nbsp;</span></font></font></font><font color="#ffd700"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">{</span></font></font></font></p>
+				<p style="letter-spacing: normal; line-height: 0.48cm; margin-left: 0.85cm; margin-bottom: 0cm">
+				<font color="#d4d4d4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#569cd6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">case</span></font></font></font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">&nbsp;&lt;-ctx.Done</span></font></font></font><font color="#da70d6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">()</span></font></font></font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">:</span></font></font></font></p>
+				<p style="letter-spacing: normal; line-height: 0.48cm; margin-left: 0.85cm; margin-bottom: 0cm">
+				<font color="#d4d4d4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#6a9955"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">//&nbsp;O&nbsp;contexto&nbsp;foi&nbsp;cancelado,&nbsp;parar&nbsp;o&nbsp;trabalho.</span></font></font></font></p>
+				<p style="letter-spacing: normal; line-height: 0.48cm; margin-left: 0.85cm; margin-bottom: 0cm">
+				<font color="#d4d4d4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">log.Println</span></font></font></font><font color="#da70d6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">(</span></font></font></font><font color="#ce9178"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">&quot;Operação&nbsp;cancelada.&quot;</span></font></font></font><font color="#da70d6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">)</span></font></font></font></p>
+				<p style="letter-spacing: normal; line-height: 0.48cm; margin-left: 0.85cm; margin-bottom: 0cm">
+				<font color="#d4d4d4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#569cd6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">return</span></font></font></font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">&nbsp;ctx.Err</span></font></font></font><font color="#da70d6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">()</span></font></font></font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">&nbsp;</span></font></font></font></p>
+				<p style="letter-spacing: normal; line-height: 0.48cm; margin-left: 0.85cm; margin-bottom: 0cm">
+				<font color="#d4d4d4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#569cd6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">case</span></font></font></font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">&nbsp;&lt;-time.After</span></font></font></font><font color="#da70d6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">(</span></font></font></font><font color="#b5cea8"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">5</span></font></font></font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">&nbsp;*&nbsp;time.Second</span></font></font></font><font color="#da70d6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">)</span></font></font></font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">:&nbsp;</span></font></font></font><font color="#6a9955"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">//&nbsp;Simula&nbsp;uma&nbsp;operação&nbsp;demorada</span></font></font></font></p>
+				<p style="letter-spacing: normal; line-height: 0.48cm; margin-left: 0.85cm; margin-bottom: 0cm">
+				<font color="#d4d4d4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#6a9955"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">//&nbsp;A&nbsp;operação&nbsp;terminou&nbsp;antes&nbsp;do&nbsp;cancelamento.</span></font></font></font></p>
+				<p style="letter-spacing: normal; line-height: 0.48cm; margin-left: 0.85cm; margin-bottom: 0cm">
+				<font color="#d4d4d4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">log.Println</span></font></font></font><font color="#da70d6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">(</span></font></font></font><font color="#ce9178"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">&quot;Operação&nbsp;concluída.&quot;</span></font></font></font><font color="#da70d6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">)</span></font></font></font></p>
+				<p style="letter-spacing: normal; line-height: 0.48cm; margin-left: 0.85cm; margin-bottom: 0cm">
+				<font color="#d4d4d4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#569cd6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">return</span></font></font></font><font color="#d4d4d4"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">&nbsp;</span></font></font></font><font color="#569cd6"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">nil</span></font></font></font></p>
+				<p style="letter-spacing: normal; line-height: 0.48cm; margin-left: 0.85cm; margin-bottom: 0cm">
+				<font color="#d4d4d4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#ffd700"><font face="Menlo, Monaco, Courier New, monospace"><font size="2" style="font-size: 9pt"><span style="font-weight: normal">}</span></font></font></font></p>
+			</span>o</font></font>
+			</p>
+			<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 0.42cm; orphans: 0; margin-top: 0.11cm; margin-bottom: 0.11cm; border: none; padding: 0cm">
+			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="1" style="font-size: 8pt"><span style="background: transparent">Apply</span></font></font></font></span></p></li>
+		</ul>
+		<p style="font-variant: normal; letter-spacing: normal; line-height: 150%; orphans: 1; margin-left: 0.85cm; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<br/>
+<br/>
+
+		</p>
+		<p style="font-variant: normal; letter-spacing: normal; line-height: 150%; orphans: 1; margin-left: 0.85cm; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<br/>
+<br/>
+
+		</p>
+		<p style="font-variant: normal; letter-spacing: normal; line-height: 150%; orphans: 1; margin-left: 0.85cm; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<br/>
+<br/>
+
+		</p>
+		<p style="font-variant: normal; letter-spacing: normal; line-height: 150%; orphans: 1; margin-left: 0.85cm; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<br/>
+<br/>
+
+		</p>
+		<p style="font-variant: normal; letter-spacing: normal; line-height: 150%; orphans: 1; margin-left: 0.85cm; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<br/>
+<br/>
+
+		</p>
+		<p style="font-variant: normal; letter-spacing: normal; line-height: 150%; orphans: 1; margin-left: 0.85cm; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span id="Frame3" dir="ltr" style="position: absolute; width: 0.04cm; border: none; padding: 0cm; background: #ffffff">
+			<div id="Frame4" dir="ltr" style="position: absolute; top: 0cm; left: 0cm; width: 0.04cm; border: none; padding: 0cm; background: #ffffff"><p style="margin-left: 0.85cm">
+				<br/>
+<br/>
+
+				</p>
+			</div><p style="margin-left: 0.85cm"><br/>
+<br/>
+
+			</p>
+		</span>
+		<span id="Frame8" dir="ltr" style="position: absolute; left: 0cm; width: 0.04cm; border: none; padding: 0cm; background: #ffffff"><p style="margin-left: 0.85cm">
+			<span id="Frame9" dir="ltr" style="position: absolute; width: 0.04cm; border: none; padding: 0cm; background: #ffffff"><p style="margin-left: 0.85cm">
+				<br/>
+<br/>
+
+				</p>
+			</span>
+			<span id="Frame10" dir="ltr" style="position: absolute; width: 0.04cm; border: none; padding: 0cm; background: #ffffff"><p style="margin-left: 0.85cm">
+				<span id="Frame11" dir="ltr" style="position: absolute; width: 0.04cm; border: none; padding: 0cm; background: #ffffff"><p style="margin-left: 0.85cm">
+					<br/>
+<br/>
+
+					</p>
+				</span><br/>
+<br/>
+
+				</p>
+			</span><br/>
+<br/>
+
+			</p>
+		</span><br/>
+<br/>
+
+		</p>
+	</div>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><span style="background: transparent">Passando
+		o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">ctx</font>&nbsp;para
+		funções&nbsp;que o suportam, como&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">db.QueryContext(ctx,
+		...)</font>&nbsp;ou&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">http.NewRequestWithContext(ctx,&nbsp;...)</font>.
+		Essas funções internas já implementam a lógica de&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">select</font>&nbsp;para
+		nós.</span></font></span></p></li>
+	</ul>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">Sua
+	resposta foi na direção certa, o&nbsp;que é ótimo.</span></font></font></font></span></p>
+	<hr/>
+
+</div>
+<div id="bubble-4ee2ee4fee60" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%; orphans: 0; margin-top: 0.16cm; margin-bottom: 0.16cm">
+	<br/>
+<br/>
+
+	</p>
+</div>
+<div id="bubble-3bd0a376af55" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0.5cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Vamos
+	ao feedback.Primeiramente, parabéns. Você demonstrou uma base
+	sólida e um bom entendimento dos conceitos mais importantes de Go
+	para a construção de sistemas distribuídos. Fica claro que você
+	tem experiência prática com a linguagem.</span></b></font></font></font></span></p>
+	<h3 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 125%; orphans: 1; margin-top: 0.48cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Pontos
+	Positivos:</span></b></font></font></font></span></h3>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Conhecimento
+		dos Padrões Corretos:</b>&nbsp;Você identificou imediatamente os
+		padrões e ferramentas certas para cada problema: worker&nbsp;pools
+		para concorrência, rate limiting, circuit breaking para
+		resiliência, injeção de dependência e mocks&nbsp;para testes, e
+		o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">context</font>&nbsp;para
+		cancelamento. Isso mostra que você tem o vocabulário e o
+		mapa&nbsp;mental de um engenheiro experiente.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Foco
+		na Praticidade:</b>&nbsp;Você mencionou pontos&nbsp;práticos
+		importantes, como configurar valores (batch size, rate limits) em
+		variáveis de ambiente, o que é crucial para a operacionalização
+		de um serviço em produção.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="3"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Soluções
+		Robustas:</b>&nbsp;Sua ideia de usar uma fila com&nbsp;DLQ (Dead
+		Letter Queue) para reprocessamento e validar o status no banco para
+		garantir a idempotência é exatamente&nbsp;a solução robusta que
+		se espera para um problema complexo como esse.</span></font></font></font></span></p></li>
+	</ol>
+	<h3 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 125%; orphans: 1; margin-top: 0.48cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Pontos
+	a Melhorar (Oportunidades de Profundidade):</span></b></font></font></font></span></h3>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">O
+	principal ponto a aprimorar é a&nbsp;<b>profundidade e a
+	especificidade das respostas iniciais</b>. Como engenheiro sênior,
+	espera-se que você não apenas saiba&nbsp;<i>o que</i>&nbsp;fazer,
+	mas também&nbsp;<i>como</i>&nbsp;implementar, detalhando os
+	mecanismos e as nuances. Muitas vezes, eu precisei fazer uma segunda
+	pergunta para extrair esses detalhes.A seguir, vou pegar duas das
+	nossas perguntas e exemplificar como uma&nbsp;resposta poderia ser
+	mais detalhada desde o início, antecipando as minhas dúvidas.</span></font></font></font></span></p>
+	<hr/>
+
+	<h4 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 125%; orphans: 1; margin-top: 0.42cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Exemplo&nbsp;1:
+	Worker Pool e Rate Limiting</span></b></font></font></font></span></h4>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">&gt;&nbsp;<b>Minha
+	pergunta original:</b>&nbsp;&quot;Como vocês arquitetaram a solução
+	para&nbsp;lidar com esse volume de forma concorrente? E como
+	garantiram que não sobrecarregariam os serviços externos?&quot;Sua
+	resposta foi boa, mas poderíamos aprofundá-la.<b>Uma resposta
+	alternativa, mais detalhada, seria:</b>&quot;Nós implementaríamos
+	um padrão de Worker Pool. Uma goroutine 'Producer' seria
+	responsável por ler o&nbsp;arquivo CSV linha por linha e enviar
+	cada cliente para um canal de&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">jobs</font>&nbsp;bufferizado.
+	No lado do consumidor, teríamos um número fixo de goroutines
+	'Workers', gerenciadas por um&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">WaitGroup</font>,
+	lendo desse canal em um loop&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">for&nbsp;range</font>.
+	Quando o 'Producer' terminasse de ler o arquivo, ele
+	chamaria&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">close(jobs)</font>,
+	o que faria com que os loops&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">for
+	range</font>&nbsp;dos workers terminassem naturalmente assim que o
+	canal ficasse vazio.Para o&nbsp;rate limiting, a abordagem mais
+	eficaz seria usar o pacote&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">golang.org/x/time/rate</font>.
+	Na inicialização do nosso&nbsp;processo, criaríamos uma instância
+	do&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">limiter</font>,
+	por exemplo:&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">rate.NewLimiter(rate.Limit(100),
+	1)</font>, para um limite de 100 requisições por segundo. Dentro
+	de cada worker, imediatamente&nbsp;antes de fazer a chamada de rede
+	para o provedor de SMS, nós chamaríamos&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">limiter.Wait(ctx)</font>.
+	Essa chamada é bloqueante e muito eficiente, pois só prosseguirá
+	quando o 'balde de tokens' permitir, garantindo que nunca excedamos
+	a taxa contratada e, de quebra, respeitando o cancelamento caso o
+	contexto seja&nbsp;finalizado enquanto espera.&quot;<b>Por que é
+	mais forte:</b>&nbsp;Essa resposta detalha
+	o&nbsp;<i>mecanismo</i>&nbsp;(<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">close(channel)</font>,&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">for
+	range</font>), cita uma biblioteca específica e padrão da
+	indústria (<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">golang.org/x/time/rate</font>),
+	e mostra como a peça se encaixa no código (<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">limiter.Wait(ctx)</font>),
+	demonstrando uma implementação prática e não&nbsp;apenas
+	teórica.</span></font></font></font></span></p>
+	<hr/>
+
+	<h4 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 125%; orphans: 1; margin-top: 0.42cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Exemplo
+	2: Circuit Breaker</span></b></font></font></font></span></h4>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">&gt;&nbsp;<b>Minha
+	pergunta original:</b>&nbsp;&quot;Como você implementaria um padrão
+	de 'circuit breaker' para interromper o processo em caso de falhas
+	consecutivas do&nbsp;serviço externo?&quot;Sua resposta
+	mencionou&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">mutex</font>,
+	cancelamento de&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">context</font>&nbsp;e
+	fila de reprocessamento. Ótimos ingredientes.<b>Uma resposta
+	alternativa, mais detalhada, seria:</b>&quot;Para o Circuit Breaker,
+	eu&nbsp;criaria uma&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">struct</font>&nbsp;dedicada
+	para gerenciar o estado, contendo um&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">sync.Mutex</font>,
+	um contador de falhas, o estado atual (Fechado, Aberto ou
+	Meio-Aberto como uma&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">enum</font>),
+	e o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">timestamp</font>&nbsp;da
+	última falha.A lógica dentro do worker seria:</span></font></font></font></span></p>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Verificar
+		antes de agir:</b>&nbsp;Antes de tentar a chamada de rede, eu
+		adquiriria o lock do mutex e verificaria o estado do disjuntor.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Circuito
+		Aberto:</b>&nbsp;Se o estado for 'Aberto', eu não tentaria a
+		chamada. A função retornaria um erro imediatamente (fail-fast), e
+		a tarefa seria enviada para uma fila de reprocessamento. Eu também
+		verificaria se já passou tempo suficiente desde a abertura para
+		talvez transitar para 'Meio-Aberto'.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="3"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Circuito
+		Fechado:</b>&nbsp;Se 'Fechado', eu liberaria o lock e&nbsp;faria a
+		chamada de rede. Se a chamada for bem-sucedida, eu resetaria o
+		contador de falhas. Se&nbsp;falhar, eu incrementaria o contador. Se
+		o contador atingir nosso limiar (ex: 10 falhas consecutivas), eu
+		mudaria o estado para 'Aberto' e registraria o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">timestamp</font>.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="4"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Cancelamento
+		do Contexto:</b>&nbsp;O cancelamento do contexto seria usado para o
+		'kill switch' geral. Se o disjuntor abrir, além de mudar o estado,
+		ele poderia chamar a função&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">cancel()</font>&nbsp;do
+		contexto global do processo, sinalizando para todos os&nbsp;workers
+		pararem de pegar novos jobs, efetivamente interrompendo todo o lote
+		de trabalho.&quot;</span></font></font></font></span></p></li>
+	</ol>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 140%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Por
+	que é mais forte:</b>&nbsp;Essa resposta descreve o fluxo lógico
+	passo a passo e os três estados do pattern (incluindo o
+	'Meio-Aberto', que é uma nuance importante). Ela demonstra a
+	interação entre o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">mutex</font>,
+	a lógica de negócio e o&nbsp;<font face="Menlo, Monaco, Courier New, monospace, Menlo, Monaco, Courier New, monospace">context</font>,
+	mostrando um domínio completo do padrão.</span></font></font></font></span></p>
+	<hr/>
+
+	<h3 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 125%; orphans: 1; margin-top: 0.48cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Conclusão</span></b></font></font></font></span></h3>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">Você
+	está em um excelente caminho. Sua&nbsp;base é sólida. O próximo
+	passo na sua senioridade é desenvolver o hábito de articular suas
+	soluções com maior profundidade, demonstrando não apenas o &quot;quê&quot;,
+	mas o &quot;como&quot; e o &quot;porquê&quot; por trás das suas
+	decisões&nbsp;de arquitetura.Continue praticando. Foi uma ótima
+	conversa</span></font></font></font></span></p>
+</div>
+<p style="line-height: 100%; margin-bottom: 0cm"><br/>
+
+</p>
+</body>
+</html>

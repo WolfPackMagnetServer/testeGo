@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 24.8.3.2 (MacOSX)"/>
+	<meta name="created" content="2025-06-30T16:07:00.184577683"/>
+	<meta name="changed" content="2025-06-30T16:08:47.430793065"/>
+	<style type="text/css">
+		@page { size: 21cm 29.7cm; margin: 2cm }
+		p { line-height: 115%; margin-bottom: 0.25cm; background: transparent }
+		h2 { margin-top: 0.35cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
+		h2.cjk { font-family: "Songti SC"; font-size: 18pt; font-weight: bold }
+		h2.ctl { font-family: "Arial Unicode MS"; font-size: 18pt; font-weight: bold }
+	</style>
+</head>
+<body lang="pt-BR" link="#000080" vlink="#800000" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><b><span style="background: transparent">Olá!
+Obrigado por participar do nosso processo seletivo. Para começarmos,
+gostaria que você me contasse um pouco sobre sua experiência com
+Golang: há quanto tempo trabalha com a linguagem e em que tipos de
+projetos já utilizou Go?</span></b></font></span></p>
+<div id="bubble-4499f2f357d4" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Trabalho
+	com golang a 4 anos. Trabalhei em um projeto de disparo de pesquisas
+	de satisfacao. O fluxo do sistema era: usuário importa a planilha
+	com os dados de seus clientes e escolhe o canal de disparo, o
+	sistema lê essa planilha e faz o disparo da mensagem de acordo com
+	o canal. Tinhamos vários microsservicos, cada um responsavel por um
+	modulo do sistema e todos escritos em go. O objetivo de utilizar go
+	nesse cenário era ter uma alta performance na entrega das mensagens
+	e uma garantia de seguranca utilizando canais para a comunicacao
+	entre as goroutines. Além do disparo imediato, tbm possuíamos
+	disparos agendados e lembretes para reenviar a mensagem</span></font></font></font></span></p>
+</div>
+<div id="bubble-1aa0d573cab0" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Ótimo,
+	obrigado por compartilhar! Agora, gostaria de aprofundar um pouco
+	mais na parte técnica:Você mencionou o uso de microsserviços em
+	Go. Pode me explicar como vocês faziam a comunicação entre esses
+	microsserviços? Utilizavam algum protocolo específico (REST, gRPC,
+	mensageria, etc)? E como era feito o tratamento de falhas na
+	comunicação entre eles?</span></b></font></font></font></span></p>
+</div>
+<div id="bubble-d19de6deb9a9" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">nesse
+	cenário em especifico, tinhamos a API que era em go e a comunicacao
+	feita via front para ela era via Rest, já os microservicos nao se
+	comunicavam diretamente, porém consumiam mensagens de fila SQS para
+	fazer os processamentos necessarios. Em outro contexto que trabalhei
+	com microservicos em go tbm, já era uma arquitetura diferente. O
+	front comunicava com o BFF em node atraves do Rest e o BFF se
+	comunciava com os microservicos atraves dp gRPC. </span></font></font></font></span>
+	</p>
+</div>
+<div id="bubble-7e3deba56175" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Excelente!
+	Agora, falando sobre concorrência em Go: você comentou sobre o uso
+	de goroutines e canais para garantir performance e segurança.
+	Pode&nbsp;me&nbsp;dar um exemplo prático de como você
+	utilizou&nbsp;canais para coordenar o trabalho entre goroutines? Se
+	possível, explique um cenário real do seu projeto e como lidou com
+	possíveis condições de corrida (race conditions).</span></b></font></font></font></span></p>
+</div>
+<div id="bubble-df8b32af4f6f" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">No
+	momento do processamento da distribuicao precisavamos fazer diversas
+	requisicoes no banco de dados para utilizar posteriormente na logica
+	de processamento da mensagem. Como a maioria dessas requisicoes
+	podiam ser feitas ao mesmo tempo, colocamos cada uma delas dentro de
+	uma goroutine espeficia gerenciando um canal de erro e de resposta
+	para cada uma delas e gerenciando por um waitgroup para que o
+	sistema entenda em que momento precisa aguardar. Além disso,
+	tinhamos uma situacao de identificar clientes duplicados na planilha
+	e para isso usamos um mutex para poder alocar e desalocar um map
+	para identificarmos se aquele cliente já foi processado. Como
+	liamos a planilha em batches utilizavamos semaforo para fazer o
+	gerencimento de quando parar e continuar</span></font></font></font></span></p>
+</div>
+<div id="bubble-59d73d4ca54d" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Muito&nbsp;bom!
+	Agora, gostaria&nbsp;de&nbsp;saber&nbsp;sobre testes: como&nbsp;você
+	costuma&nbsp;estruturar os testes&nbsp;em&nbsp;projetos Go? Pode
+	comentar&nbsp;sobre&nbsp;sua&nbsp;experiência com&nbsp;testes
+	unitários, mocks e&nbsp;testes de&nbsp;integração? Se possível,
+	cite&nbsp;ferramentas que&nbsp;costuma&nbsp;utilizar&nbsp;e
+	como&nbsp;garante a&nbsp;qualidade do&nbsp;código&nbsp;em ambientes
+	de produção.</span></b></font></font></font></span></p>
+</div>
+<div id="bubble-c9de7f3964a7" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Primeiro
+	o ideal é que o projeto esteja adaptado para termos uma boa
+	cobertura de testes, para isso é importante trabalharmos com
+	injeção de dependencia entre controllers, usecases e repositories,
+	assim temos facilidade para a criacao de mocks por exemplo e para
+	criar os mocks utilizamos o mockery, que hoje esta na versao 3, ele
+	gera todos os mocks de forma automatica utilzaindo o comando
+	mockery. Além disso utilizo a biblioteca testing do proprio go para
+	fazer os testes e gosto de colocar um suite para a execucao de todos
+	os testes daquele contexto e separar todos os cenarios de testes do
+	mesmo contexto em describes. Falando de teste de integracao, gosto
+	de ter um espaco no banco de dados para testes diretos nele, como
+	por exemplo se um banco for multitenant, um schema dso teste. Para a
+	qualidade de codigo, acho importante utilizar o lint do go, além de
+	rodar o sonar ou qualquer outra ferramenta que valide o codigo na
+	pipeline, além de analise de PRs mais aprofundadas e como hoje
+	temos a IA que veio para somar, podemos utilizar ferramentas que
+	auxiliem na qualidade do codigo como o copilot e o coderabbit para
+	auxilio no desenvolvimento e na analise do PR</span></font></font></font></span></p>
+</div>
+<div id="bubble-5698649cf969" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Ótima&nbsp;resposta!
+	Agora, gostaria de abordar&nbsp;um
+	tema&nbsp;importante&nbsp;em&nbsp;sistemas&nbsp;distribuídos:
+	tolerância a falhas&nbsp;e&nbsp;observabilidade.Como&nbsp;você&nbsp;costuma&nbsp;monitorar
+	e lidar&nbsp;com falhas em&nbsp;aplicações Go&nbsp;em&nbsp;produção?
+	Quais ferramentas ou práticas você utiliza&nbsp;para garantir&nbsp;que,
+	caso&nbsp;algo dê errado, o&nbsp;time
+	consiga&nbsp;identificar&nbsp;rapidamente o problema&nbsp;e&nbsp;agir
+	de forma&nbsp;eficiente?</span></b></font></font></font></span></p>
+</div>
+<div id="bubble-21032c851298" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Importante
+	termos logs e traces bem configruados e padronizados para facilitar
+	na busca pelo problema. Já utilizei o newrelic, uptrace, datadog,
+	mas o mais recente foi o Signoz para a visibilidade de logs e
+	traces. Além disso acho importante configurarmos alertas em canais
+	de comunicacao como por exemplo o slack. Um rollback facil para caso
+	seja necessario </span></font></font></font></span>
+	</p>
+</div>
+<div id="bubble-18bd32adb613" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Excelente!
+	Para finalizar, gostaria de saber sobre sua experiência com deploy
+	e CI/CD&nbsp;em projetos Go.Como&nbsp;você&nbsp;costuma estruturar
+	o pipeline&nbsp;de deploy&nbsp;para&nbsp;aplicações Go?
+	Quais&nbsp;ferramentas&nbsp;já utilizou&nbsp;para&nbsp;automação
+	desse processo e quais boas práticas considera essenciais para
+	garantir entregas seguras e rápidas?</span></b></font></font></font></span></p>
+</div>
+<div id="bubble-418ea3ba6b15" dir="ltr"><p style="line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="inherit"><font size="2" style="font-size: 9pt"><span style="background: transparent">Já
+	utilizei o azure e a propria pipeline da AWS. Acho importante em uma
+	pipeline termos a execucao dos testes e validacao de conde smell.
+	Caso os testes quebrem a pipeline deve travar, assim como algum code
+	smell novo ou possivel encontrado pelo sonar por exemplo, tbm deve
+	travar. <br/>
+Importante trabalhar com releases para termos versoes
+	estaveis fda plataforma e que a aprovacao de demandas para producao
+	seja feita por pessoas especificas</span></font></font></font></span></p>
+</div>
+<div id="bubble-f36b3ce2f306" dir="ltr"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Ótimo!
+	Encerramos aqui&nbsp;a&nbsp;entrevista simulada. Agora, vou te
+	dar&nbsp;um feedback&nbsp;detalhado, destacando pontos&nbsp;positivos
+	e&nbsp;pontos a&nbsp;melhorar, conforme&nbsp;solicitado.</span></b></font></font></font></span></p>
+	<hr/>
+
+	<h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 125%; orphans: 1; margin-top: 0.53cm; margin-bottom: 0.26cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Pontos
+	Positivos</span></b></font></font></font></span></h2>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Experiência
+		sólida e contextualizada:</b>&nbsp;Você&nbsp;demonstrou
+		experiência prática com&nbsp;Golang&nbsp;em cenários reais,
+		explicando bem&nbsp;o&nbsp;contexto&nbsp;dos
+		projetos&nbsp;e&nbsp;as&nbsp;decisões&nbsp;técnicas.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Domínio&nbsp;de&nbsp;concorrência:</b>&nbsp;Explicou
+		de&nbsp;forma&nbsp;clara o uso de goroutines, canais, mutex e
+		semáforos, mostrando&nbsp;conhecimento avançado dos&nbsp;recursos&nbsp;de
+		concorrência do Go.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="3"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Boas&nbsp;práticas
+		de testes:</b>&nbsp;Mostrou&nbsp;preocupação com&nbsp;cobertura,
+		injeção de&nbsp;dependências, uso&nbsp;de mocks, testes&nbsp;de
+		integração&nbsp;e ferramentas&nbsp;de&nbsp;qualidade de código.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="4"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>Observabilidade
+		e&nbsp;monitoramento:</b>&nbsp;Citou ferramentas modernas&nbsp;e
+		práticas&nbsp;para logs, traces e alertas, além&nbsp;de&nbsp;mencionar
+		rollback&nbsp;como estratégia&nbsp;de mitigação.</span></font></font></font></span></p></li>
+	</ol>
+	<ol>
+		<li value="5"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent"><b>CI/CD
+		e&nbsp;automação:</b>&nbsp;Apresentou&nbsp;boas práticas&nbsp;para
+		pipelines, validação automática e&nbsp;controle&nbsp;de&nbsp;releases,
+		além&nbsp;de citar&nbsp;ferramentas relevantes.</span></font></font></font></span></p></li>
+	</ol>
+	<hr/>
+
+	<h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 125%; orphans: 1; margin-top: 0.53cm; margin-bottom: 0.26cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Pontos
+	a&nbsp;Melhorar&nbsp;(com exemplos&nbsp;de&nbsp;respostas
+	aprimoradas)</span></b></font></font></font></span></h2>
+	<ol>
+		<li value="1"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Detalhamento&nbsp;técnico&nbsp;nas&nbsp;respostas</span></b></font></font></font></span></p></li>
+	</ol>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">Em
+		alguns&nbsp;momentos, suas respostas&nbsp;poderiam ser&nbsp;mais
+		detalhadas tecnicamente, principalmente ao&nbsp;explicar
+		como&nbsp;as&nbsp;ferramentas&nbsp;são integradas&nbsp;ou
+		configuradas.</span></font></font></font></span></p></li>
+	</ul>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Exemplo
+		de resposta aprimorada&nbsp;para monitoramento:</span></b></font></font></font></span></p></li>
+	</ul>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">&gt;&nbsp;&quot;Além
+	de&nbsp;configurar logs&nbsp;estruturados&nbsp;com&nbsp;o&nbsp;padrão
+	JSON&nbsp;usando&nbsp;a&nbsp;biblioteca&nbsp;zap, integro
+	o&nbsp;Signoz&nbsp;via&nbsp;OpenTelemetry para&nbsp;coletar
+	métricas&nbsp;e&nbsp;traces. Configuro exporters&nbsp;para
+	enviar&nbsp;dados em&nbsp;tempo real&nbsp;e defino&nbsp;alertas
+	customizados&nbsp;no Slack para eventos críticos, como&nbsp;aumento&nbsp;de
+	latência ou falhas em&nbsp;endpoints&nbsp;específicos. Também
+	implemento&nbsp;health&nbsp;checks expostos&nbsp;em endpoints&nbsp;HTTP
+	para&nbsp;facilitar o&nbsp;monitoramento automatizado.&quot;</span></font></font></font></span></p>
+	<ol>
+		<li value="2"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Citar&nbsp;exemplos
+		práticos de&nbsp;problemas enfrentados</span></b></font></font></font></span></p></li>
+	</ol>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">Faltaram&nbsp;exemplos
+		de desafios&nbsp;reais e&nbsp;como você&nbsp;os&nbsp;solucionou, o
+		que&nbsp;enriquece a&nbsp;resposta&nbsp;e demonstra experiência
+		prática.</span></font></font></font></span></p></li>
+	</ul>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Exemplo
+		de resposta aprimorada para&nbsp;concorrência:</span></b></font></font></font></span></p></li>
+	</ul>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">&gt;
+	&quot;Em&nbsp;um&nbsp;caso, tivemos&nbsp;um problema&nbsp;de
+	race&nbsp;condition&nbsp;ao&nbsp;atualizar
+	um&nbsp;contador&nbsp;global&nbsp;de&nbsp;envios. Resolvi&nbsp;utilizando
+	um&nbsp;sync.Mutex para&nbsp;proteger&nbsp;a região crítica,
+	além&nbsp;de&nbsp;adicionar testes&nbsp;com&nbsp;a flag&nbsp;-race
+	para garantir&nbsp;que&nbsp;não&nbsp;havia mais&nbsp;condições
+	de&nbsp;corrida.&quot;</span></font></font></font></span></p>
+	<ol>
+		<li value="3"><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Aprofundar
+		em&nbsp;decisões&nbsp;arquiteturais</span></b></font></font></font></span></p></li>
+	</ol>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">Poderia&nbsp;detalhar
+		mais o&nbsp;porquê das&nbsp;escolhas de&nbsp;arquitetura, como
+		a&nbsp;decisão&nbsp;entre&nbsp;gRPC&nbsp;e REST, ou&nbsp;o uso&nbsp;de
+		filas.</span></font></font></font></span></p></li>
+	</ul>
+	<ul>
+		<li><p style="font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 150%; orphans: 1; margin-top: 0.05cm; margin-bottom: 0.05cm; border: none; padding: 0cm">
+		<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><b><span style="background: transparent">Exemplo&nbsp;de
+		resposta&nbsp;aprimorada&nbsp;para arquitetura:</span></b></font></font></font></span></p></li>
+	</ul>
+	<p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 150%; orphans: 1; margin-bottom: 0cm">
+	<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><font face="apple-system, system-ui, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">&gt;
+	&quot;Optamos por&nbsp;gRPC&nbsp;entre&nbsp;microsserviços devido à
+	necessidade&nbsp;de baixa latência e&nbsp;tipagem&nbsp;forte, além
+	de&nbsp;facilitar&nbsp;a&nbsp;evolução dos&nbsp;contratos de&nbsp;API.
+	Já para&nbsp;comunicação&nbsp;assíncrona, utilizamos&nbsp;SQS&nbsp;para
+	desacoplar os serviços&nbsp;e&nbsp;garantir resiliência&nbsp;em
+	caso de falhas temporárias.&quot;</span></font></font></font></span></p>
+</div>
+<p style="line-height: 100%; margin-bottom: 0cm"><br/>
+
+</p>
+</body>
+</html>

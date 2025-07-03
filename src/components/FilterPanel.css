@@ -1,0 +1,359 @@
+.filter-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  max-width: 400px;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.8);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.filter-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-title h3 {
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #374151;
+}
+
+.filter-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.filter-section {
+  margin-bottom: 2rem;
+}
+
+.filter-section h4 {
+  color: #374151;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.filter-option:hover {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.filter-option input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  height: 18px;
+  width: 18px;
+  background-color: #f3f4f6;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.filter-option:hover .checkmark {
+  border-color: #667eea;
+}
+
+.filter-option input:checked ~ .checkmark {
+  background-color: #667eea;
+  border-color: #667eea;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.filter-option input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.option-text {
+  color: #374151;
+  font-size: 0.9rem;
+  font-weight: 500;
+  flex: 1;
+}
+
+.filter-actions {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.clear-filters-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-filters-button:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .filter-panel {
+    max-width: 100%;
+    height: 100vh;
+  }
+
+  .filter-header {
+    padding: 1rem;
+  }
+
+  .filter-title h3 {
+    font-size: 1.1rem;
+  }
+
+  .close-button {
+    padding: 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .filter-content {
+    padding: 1rem;
+  }
+
+  .filter-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-section h4 {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .filter-options {
+    gap: 0.5rem;
+  }
+
+  .filter-option {
+    padding: 0.75rem;
+    min-height: 48px;
+  }
+
+  .option-text {
+    font-size: 0.85rem;
+  }
+
+  .clear-filters-button {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-header {
+    padding: 0.75rem;
+  }
+
+  .filter-title h3 {
+    font-size: 1rem;
+  }
+
+  .filter-content {
+    padding: 0.75rem;
+  }
+
+  .filter-section {
+    margin-bottom: 1.25rem;
+  }
+
+  .filter-section h4 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .filter-option {
+    padding: 0.6rem;
+    min-height: 44px;
+  }
+
+  .option-text {
+    font-size: 0.8rem;
+  }
+
+  .checkmark {
+    height: 16px;
+    width: 16px;
+  }
+
+  .checkmark:after {
+    left: 4px;
+    top: 1px;
+    width: 3px;
+    height: 7px;
+  }
+
+  .clear-filters-button {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Melhorias específicas para mobile */
+@media (max-width: 768px) {
+  /* Melhorar scroll no mobile */
+  .filter-content {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .filter-content::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .filter-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .filter-content::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 2px;
+  }
+
+  /* Melhorar toque no mobile */
+  .filter-option {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .filter-option:active {
+    background: rgba(102, 126, 234, 0.1);
+  }
+
+  .close-button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .close-button:active {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .clear-filters-button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .clear-filters-button:active {
+    transform: scale(0.98);
+  }
+
+  /* Melhorar contraste no mobile */
+  .filter-panel {
+    background: #ffffff;
+    border-left: 1px solid #e5e7eb;
+  }
+
+  .filter-header {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .option-text {
+    color: #111827;
+  }
+
+  .filter-section h4 {
+    color: #111827;
+  }
+}
+
+/* Melhorar acessibilidade no mobile */
+@media (max-width: 768px) {
+  .filter-option {
+    /* Área de toque mínima recomendada */
+    min-height: 44px;
+  }
+
+  .close-button {
+    /* Área de toque mínima recomendada */
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .clear-filters-button {
+    /* Área de toque mínima recomendada */
+    min-height: 44px;
+  }
+}

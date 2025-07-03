@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 24.8.3.2 (MacOSX)"/>
+	<meta name="created" content="2025-06-30T16:53:03.038141628"/>
+	<meta name="changed" content="2025-06-30T16:54:40.372319960"/>
+	<style type="text/css">
+		@page { size: 21cm 29.7cm; margin: 2cm }
+		p { line-height: 115%; margin-bottom: 0.25cm; background: transparent }
+		h2 { margin-top: 0.35cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
+		h2.cjk { font-family: "Songti SC"; font-size: 18pt; font-weight: bold }
+		h2.ctl { font-family: "Arial Unicode MS"; font-size: 18pt; font-weight: bold }
+		h3 { margin-top: 0.25cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h3.western { font-family: "Liberation Serif", serif; font-size: 14pt; font-weight: bold }
+		h3.cjk { font-family: "Songti SC"; font-size: 14pt; font-weight: bold }
+		h3.ctl { font-family: "Arial Unicode MS"; font-size: 14pt; font-weight: bold }
+		code { font-family: "Liberation Mono", monospace }
+		strong { font-weight: bold }
+	</style>
+</head>
+<body lang="pt-BR" link="#000080" vlink="#800000" dir="ltr"><p style="border: 1px solid #000000; padding: 0.05cm">
+<span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Vou
+fazer uma entrevista.Simule uma entrevista de desenvolvedor senior
+golang de forma natural, onde vamos simular uma conversa onde você é
+o entrevistador (Fluxo: você pergunta, eu respondo e assim por
+diante até finalizarmos a entrevista.).Após finalizarmos a
+entrevista me pontue pontos positivos e pontos a melhorar, nos pontos
+a melhorar, exemplifique o que poderia ser melhor dito, respondendo a
+propria pergunta.</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Perfeito!
+Vou conduzir uma entrevista para desenvolvedor sênior Go. Vamos
+começar de forma natural.</b></span></p>
+<hr/>
+
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Olá!
+Seja bem-vindo(a) à nossa entrevista. Meu nome é João e sou Tech
+Lead aqui na empresa. É um prazer conhecê-lo(a).</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Para
+começarmos, você poderia se apresentar brevemente? Conte um pouco
+sobre sua experiência com Go e o que te trouxe até aqui hoje.</b></span></p>
+<p><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">L</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Trabalho
+com golang a 4 anos, trazendo o cenário mais recente, atuei em um
+projeto que tem como core o disparo de pesquisas de satisfacao
+atraves de canais como sms, wpp e email. O fluxo do projeto era
+basicamente o usuario enviar a planilha pra nossa plataforma com os
+dados dos clientes e selecionar o canal que deseja disparar as
+pesquisas. O ecossistema possui um servico principal que é o backend
+e api publica e os microservicos todos em go, cada um separado de
+acordo com o módulo do projeto. A escolha da utiliazcao do go se deu
+pois o contexto do projeto é a entrega de todas as pesquisas de
+forma segura e utilizando as goroutines conseguimos ter um
+processamento masi performatico e a comunicacao entre elas feita com
+canais gera uma seguranca a mais para a entrega final da mensagem</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Excelente!
+É interessante ver como vocês aproveitaram as goroutines para
+otimizar o processamento.</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Me
+conta mais sobre a arquitetura: você mencionou microserviços
+separados por módulo. Como vocês gerenciavam a comunicação entre
+esses serviços? E quando você fala sobre usar canais para segurança
+na entrega das mensagens, isso era entre goroutines dentro do mesmo
+serviço ou havia algum padrão de comunicação entre os
+microserviços também?</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Além
+disso, com 4 anos de experiência em Go, quais foram os principais
+desafios que você enfrentou ao trabalhar com concorrência? Teve
+alguma situação específica onde precisou debuggar problemas
+relacionados a race conditions ou deadlocks?</b></span></p>
+<p><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">L</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Os
+microservicos nao comunicam diretamente entre eles, todos consomem
+mensagens vindas de filas distintas SQS dentro da AWS. Todos os
+microservicos comunicam com o mesmo banco de dados e quem envia a
+mensagem para cada uma das filas dos modulos é o servico principal,
+tambem escrito em go. A utilizacao de canais que mencionei é para a
+comunicacao dentro do proprio microservico e suas goroutines. Os
+servicos precisam fazer diversas requisicoes no banco de dados e elas
+podem ser feitas de forma concorrente, entao utilizamos goroutines
+para cada uma das requisocoes controlando o retorno de erros e
+respostas por canais e gerenciando com waitgroup para que o sistema
+entenda quando precisa aguardar para seguir com o processamento. </span>
+</p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Trabalhando
+com concorrencia eu tive cenarios de race condition justamente nessa
+situacao do disparo das mensagens, esse servico tinha diversas
+regras, dentre elas tinhamos que ler a planilha csv em batches para
+ficar mais performatico e comecamos a ter o problema de race
+condition nessas leituras e para solucionar esse problema utilizamos
+semaforos para o gerenciamento. Além dessa situacao tbm rpecisavamos
+identificar clientes duplicados na planilha e esses clientes era
+salvos em um map, e ai tivemos o problema de race condition também e
+para solucionar urilizamos o mutex para alocar e desalocar o map e
+conseguirmos identificar os clientes duplicados. Também tivemos um
+cenario de deadlock no banco pelo fato de varias goroutines estarem
+utilizando a mesma tabela e as vezes até o mesmo registro, nesse
+caso, todos os inserts e updates eram feitos em batches, colocamos um
+gerenciamento e tempo para que nao ocorra o race condition no nosso
+banco que nesse caso era o postgres</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Muito
+bem! Você demonstra uma boa experiência prática com os desafios
+reais de concorrência. É interessante como vocês resolveram
+diferentes tipos de problemas - semáforos para controle de leitura,
+mutex para maps compartilhados, e batch processing para evitar
+contenção no banco.</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Agora,
+vou fazer uma pergunta mais técnica: no Go, temos várias formas de
+gerenciar concorrência. Você mencionou
+usar&nbsp;</b></span><span style="display: inline-block; border: 1px solid #dedcd1; padding: 0.05cm"><code><b>sync.WaitGroup</b></code></span><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>,&nbsp;</b></span><span style="display: inline-block; border: 1px solid #dedcd1; padding: 0.05cm"><code><b>sync.Mutex</b></code></span><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>&nbsp;e
+semáforos. Como você decidiria entre usar um canal (</b></span><span style="display: inline-block; border: 1px solid #dedcd1; padding: 0.05cm"><code><b>channel</b></code></span><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>)
+versus um mutex em uma situação específica? Existe alguma regra ou
+princípio que você segue para essa escolha?</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>E
+já que você trabalhou bastante com processamento de arquivos CSV em
+lotes, como você estruturaria o código para ler um arquivo muito
+grande (digamos, 10GB) de forma eficiente em Go, considerando
+limitações de memória?</b></span></p>
+<p><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">L</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Entendo
+que devemos utilizar o channel para a retencao de dados de retorno de
+acoes dentro de uma goroutine, já o mutex entendo que utilizamos em
+situacoes em que precisamos travar aquele dado de receber valores e
+depois destravar quando ja estiver ok para o recebimento, ou seja, em
+situacoes que precisamos verificar o dado puro. </span>
+</p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Leria
+o arquivo em batches e goroutines, ou seja, cada goroutine
+processaria uma quantidade X de linhas. A quantidade de linhas que
+seria o batch e quantidade de goroutines seriam armazenadas nas
+variaveis de ambiente para que possamos configurar de forma agil de
+acordo com a capacidade da nossa infraestrutura. considerando que uma
+goroutine consome em média 2kb de memoria, tentaria calcular com
+base nessa média, mas deixar esses dados de configuracao nas
+variaveis de ambiente para quando estiver em producao pudessemos
+monitorar e ir melhorando de acordo com o cenário do nosso ambiente
+produtivo</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Ótimo!
+A abordagem de configurar via variáveis de ambiente é bem prática
+para ajustar em produção.</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Vou
+partir para uma pergunta sobre design patterns e estrutura de código.
+Considerando sua experiência com microserviços em Go, como você
+estrutura seus projetos? Você segue alguma arquitetura específica
+como Clean Architecture, Hexagonal, ou tem algum padrão próprio?</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>E
+pensando em testes: como você aborda testes em Go, especialmente
+quando temos código que utiliza goroutines e concorrência? É um
+desafio testar código concorrente - você tem alguma estratégia
+específica para isso?</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Por
+último, já que vocês trabalham com integração de diferentes
+canais (SMS, WhatsApp, email), como você lidaria com a necessidade
+de implementar um novo canal de comunicação? Como estruturaria o
+código para que seja facilmente extensível?</b></span></p>
+<p><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">L</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Utilizo
+o clean architeture como base, mas costumo adaptar de acordo com o
+cenário que estou travlhando, entendo que services ficam na camada
+de infraestrutura, controllers ficam na camada de adapters, tentando
+deixar bem claro qual é a funcão de cada arquivo e qual camada é
+responsavel por isso. </span>
+</p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Para
+testar o codigo em go, primeiro temos que adaptar o código para que
+consigamos fazer testes eficientes e de forma pratica, para isso
+utilizo injecao de dependencia para ficar masi facil mocar os dados.
+Utilizo o mockery para criar os mocks de todo o projeto e a propria
+biblioteca de testes do go para o código. Para testes de integracao
+gosto de ter um banco separado para executar os cenarios. Utilizo um
+suite só para a execucao de cada arquivo e dentro desse arquivo crio
+cenarios de todo o modulo dentro de um describe para ficar separado
+quais cenarios representam cada modulo. </span>
+</p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Primeiro
+criaria uma lib para ser responsavel pela integracao com os
+provedores. Assim separaria por pastas cada provedor, tendo o codigo
+especifico para cada um. Verificaria atraves da rota de health check
+do provedor se ele esta de pé sempre antes de iniciar o processo de
+envio para que fique transparente para o meu usuario caso um servico
+terceiro esteja fora do ar. As configuracoes de chave de api e
+senhas, ficaria armazenadas nas minahs variaveis de ambiente para
+maior seguranca e teria uma forma de fallback para caso o servico do
+provedor esteja fora do ar, consigamos reenvio essas mensagen após
+seu retorno</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Excelente!
+Vejo que você tem uma visão bem estruturada sobre arquitetura e
+testes. A abordagem de health check e fallback mostra preocupação
+com resiliência.</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Vou
+fazer mais algumas perguntas técnicas para finalizar:</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><strong>Performance
+e Observabilidade</strong>: Em um cenário onde vocês estão
+processando milhares de mensagens por minuto, como você
+implementaria observabilidade? Quais métricas seriam importantes
+monitorar? E se você identificasse um bottleneck de performance,
+qual seria seu processo para investigar e resolver?</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><strong>Gerenciamento
+de Erros</strong>: Go tem uma abordagem bem específica para
+tratamento de erros. Como você estrutura o tratamento de erros em
+uma aplicação complexa como essa? Você utiliza alguma biblioteca
+externa ou segue apenas o padrão nativo? E como você diferencia
+erros que devem ser logados vs erros que devem interromper o
+processamento?</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><strong>Deployment
+e Versionamento</strong>: Considerando que vocês têm múltiplos
+microserviços, como vocês gerenciam o deployment? Existe alguma
+estratégia para lidar com breaking changes entre os serviços?</span></p>
+<p><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">L</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Utilizaria
+logs padronizados, configurados no formato json utilizando a lib zap
+do proprio go e utilzatia uma ferramenta para a configuracao e logs e
+traces que aso enviados atraves do opentelemetry. Já trabalhei com
+Newrelic, datadig, uptrace e signoz para essa funcao. Além disso
+configuraria alertas nos canais de comunicacao para casos de erros
+criticos e teria um rollback facilitado e rápido em casos que o erro
+tenha sido gerado por uma release nao estavel que subiu para o
+ambiente produtivo</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Nao
+utilizo uma biblioteca extena para os erros além das bibliotecas de
+log, porém gosto de padronizar todos os erros dentro da plataforma,
+para que facilite a analise do bug, etnao crio arquivos de erros com
+textos especificos e range de códigos que representem determinados
+modulos e acoes para facil monitoramente. É importante manter a
+documentacao desses erros semre atualizada</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Utilizo
+pipelines especificas para cada microservico dentro do azure devops.
+Todas as pipelines devem rodar o lint do go, os testes e o sonar para
+verificacao de code smell. O rollback deve ser rapido e o codigo de
+um servico nao pode impactar no outro, assim o deploy nao fica
+moroso, pois só subimos a pipeline do servico que foi alterado.</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Perfeito!
+Vejo que você tem uma visão bem madura sobre operações e ciclo de
+vida de software.</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Última
+pergunta para fecharmos:&nbsp;</b><strong><b>Cenário Prático</b></strong></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Imagine
+que você recebeu um chamado urgente: o sistema de disparo de
+pesquisas está apresentando timeout em 30% das requisições durante
+horário de pico, e os logs mostram que algumas mensagens estão
+sendo duplicadas. Você tem 2 horas para identificar e resolver o
+problema.</b></span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Como
+você estruturaria sua investigação? Qual seria sua abordagem
+step-by-step para diagnosticar e resolver essa situação?</b></span></p>
+<hr/>
+
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><b>Essa
+é minha última pergunta. Você tem alguma dúvida sobre a empresa,
+sobre o time técnico, ou sobre a posição que pode me fazer antes
+de finalizarmos?</b></span></p>
+<p><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">L</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Para
+investigar, incialmente faria duas acoes, analisaria os logs tanto de
+processamento do código em si, como também analisaria a memoria e
+CPU da maquina durante o período que aconteceu o timeout e a
+duplicacao. Depois simularia o cenario de duplicacao de mensagens,
+adicionaria uma trava para que se a mensagem já foi processada, ela
+nao seja proessada novamente, isso no código. Verificaria o
+gerenciamento de status da mensagem para entender se esta funcionando
+corretamente. Além disso otimizaria as queries utilizadas no banco
+pois pode ser que o banco esteja topando. Caso a memoria esteja
+ficando alta, eu diminuiria a quantidade de goroutines processando em
+concorrencia.</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Perfeito!
+Sua abordagem sistemática mostra experiência real com
+troubleshooting em produção.</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Muito
+obrigado pela entrevista! Foi uma conversa muito produtiva. Você
+demonstrou conhecimento sólido em Go e experiência prática com
+sistemas distribuídos.</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">Vamos
+encerrar por aqui. Em breve nosso RH entrará em contato com o
+feedback. Tem mais alguma dúvida sobre a posição ou sobre nossa
+empresa?</span></p>
+<hr/>
+
+<h2 class="western" style="border: 1px solid #000000; padding: 0.05cm">
+<span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><strong>FEEDBACK
+DA ENTREVISTA</strong></span></h2>
+<h3 class="western" style="border: 1px solid #000000; padding: 0.05cm">
+<span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><strong>PONTOS
+POSITIVOS:</strong></span></h3>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">✅&nbsp;<strong>Experiência
+prática sólida</strong>&nbsp;- Demonstrou conhecimento real com
+casos de uso complexos (concorrência, microserviços, processamento
+em lotes)</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">✅&nbsp;<strong>Domínio
+de concorrência</strong>&nbsp;- Soube explicar bem goroutines,
+channels, mutex, semáforos e WaitGroups com exemplos práticos</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">✅&nbsp;<strong>Conhecimento
+de arquitetura</strong>&nbsp;- Clean Architecture, separação de
+responsabilidades, microserviços</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">✅&nbsp;<strong>Visão
+de observabilidade</strong>&nbsp;- OpenTelemetry, logs estruturados,
+monitoramento</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">✅&nbsp;<strong>Experiência
+com troubleshooting</strong>&nbsp;- Abordagem estruturada para
+resolução de problemas</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">✅&nbsp;<strong>Preocupação
+com qualidade</strong>&nbsp;- Testes, CI/CD, análise de código</span></p>
+<h3 class="western" style="border: 1px solid #000000; padding: 0.05cm">
+<span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><strong>PONTOS
+A MELHORAR:</strong></span></h3>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">❌&nbsp;<strong>Explicação
+sobre channels vs mutex foi superficial</strong>&nbsp;<strong>Resposta
+ideal:</strong>&nbsp;&quot;Uso channels quando quero comunicar dados
+entre goroutines (share memory by communicating). Uso mutex quando
+preciso proteger o acesso concorrente a um recurso compartilhado
+(communicating by sharing memory). A regra é: se é sobre
+comunicação/pipeline de dados, channel. Se é sobre proteção de
+estado compartilhado, mutex.&quot;</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">❌&nbsp;<strong>Faltou
+detalhamento técnico no processamento de arquivos grandes</strong>&nbsp;<strong>Resposta
+ideal:</strong>&nbsp;&quot;Usaria&nbsp;</span><span style="display: inline-block; border: 1px solid #dedcd1; padding: 0.05cm"><code>bufio.Scanner</code></span><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">&nbsp;ou&nbsp;</span><span style="display: inline-block; border: 1px solid #dedcd1; padding: 0.05cm"><code>csv.Reader</code></span><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">&nbsp;com
+buffer configurável, implementaria um pool de workers com channels
+para controlar a carga, e processaria linha por linha sem carregar
+tudo na memória. Implementaria backpressure para evitar sobrecarga.&quot;</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">❌&nbsp;<strong>Tratamento
+de erros poderia ser mais específico</strong>&nbsp;<strong>Resposta
+ideal:</strong>&nbsp;&quot;Uso error wrapping
+com&nbsp;</span><span style="display: inline-block; border: 1px solid #dedcd1; padding: 0.05cm"><code>fmt.Errorf</code></span><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">&nbsp;e&nbsp;</span><span style="display: inline-block; border: 1px solid #dedcd1; padding: 0.05cm"><code>errors.Is/As</code></span><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">&nbsp;para
+preservar contexto. Crio tipos de erro customizados para diferentes
+categorias. Erros de infraestrutura são logados e podem causar
+retry, erros de negócio são retornados ao usuário, erros críticos
+interrompem o processamento.&quot;</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm">❌&nbsp;<strong>Estratégia
+de troubleshooting poderia incluir mais ferramentas</strong>&nbsp;<strong>Resposta
+ideal:</strong>&nbsp;&quot;Começaria com análise de métricas
+(Prometheus/Grafana), depois logs distribuídos, usaria profiling com
+pprof para identificar gargalos, verificaria connection pooling do
+banco, analisaria traces distribuídos para encontrar o bottleneck, e
+implementaria circuit breaker para falhas em cascata.&quot;</span></p>
+<p style="border: 1px solid #000000; padding: 0.05cm"><span style="display: inline-block; border: 1px solid #000000; padding: 0.05cm"><strong>Avaliação
+geral:</strong>&nbsp;Candidato aprovado - demonstra experiência
+sólida e conhecimento prático, com potencial para crescimento em
+aspectos mais avançados.</span></p>
+<p style="line-height: 100%; margin-bottom: 0cm"><br/>
+
+</p>
+</body>
+</html>
